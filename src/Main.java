@@ -1,17 +1,17 @@
 public class Main {
     public static void main(String[] args) {
 
-        // Matriz dos coeficientes e termos independentes do sistema
         int[][] A = {
                 {10, 2, 1},
                 {1, 5, 1},
                 {2, 3, 10}
         };
         int[] B = {7, -8, 6};
-        double[] X = {0, 0, 0}; // Chute inicial
+        double[] X = {0, 0, 0};
+        double[] XAnterior = new double[X.length];
         boolean converge = true;
-
-        //Bloco 1 : Verificar a Convergencia
+        double tolerancia = 0.05;
+        int maxIteracao = 100;
 
         for (int i = 0; i < A.length; i++) {
             int somaConvergencia = 0;
@@ -27,10 +27,8 @@ public class Main {
                 System.out.println("Não Converge");
             }
         }
-
-        //Bloco 2: Gauss Seidel
-
-        for (int iter = 0; iter < 10; iter++) {
+        System.out.println("-------------------");
+        for (int iter = 0; iter < maxIteracao; iter++) {
 
             for (int i = 0; i < X.length; i++) {
 
@@ -40,9 +38,24 @@ public class Main {
                     if (j != i) {
                         soma += A[i][j] * X[j];
                     }
-                    X[i] = (B[i] - soma) / A[i][i];
+                }
+                X[i] = (B[i] - soma) / A[i][i];
+            }
+
+            boolean precisao = true;
+            for (int i = 0; i < X.length; i++) {
+                if (Math.abs(X[i] - XAnterior[i]) > tolerancia) {
+                    precisao = false;
+                    break;
                 }
             }
+            System.arraycopy(X, 0, XAnterior, 0, X.length);
+
+            if (precisao) {
+                System.out.println("O sistema convergiu na iteração: " + (iter + 1));
+                break;
+            }
+
             System.out.println("Iteração " + (iter + 1));
             System.out.println("X1 = " + X[0]);
             System.out.println("X2= " + X[1]);
